@@ -19,6 +19,6 @@ from django.contrib import admin
 from django.urls import path, include # Add 'include'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('private-admin-not-public/', admin.site.urls),
     path('', include('collector.urls')), # Add this line
 ]
