@@ -380,22 +380,21 @@
 
 
 
-
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / '.env')   # loads .env into environment
 
-# --- SECURITY ---
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-key")  # fallback for local
-
+# SECURITY
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-key")  # fallback for dev only
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ["*"]  # later replace with your Railway domain if needed
+# safer ALLOWED_HOSTS (comma separated in .env)
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
-
-# --- APPLICATIONS ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -403,7 +402,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'collector',  # your app
+    'collector',
 ]
 
 MIDDLEWARE = [
