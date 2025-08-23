@@ -160,10 +160,17 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-a-very-long-default-k
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # This gets the allowed hostname from the Render environment.
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+
+# For Railway
+RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+if RAILWAY_PUBLIC_DOMAIN:
+    ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
 
 # --- END OF DEPLOYMENT SETTINGS ---
 
