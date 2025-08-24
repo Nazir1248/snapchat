@@ -255,14 +255,11 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 from pathlib import Path
 import os
 import dj_database_url
 import environ
 
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Initialise environment variables
@@ -273,16 +270,22 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY", default="unsafe-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", default=True)
+DEBUG = env.bool("DEBUG", default=False)
 
-# ALLOWED_HOSTS = ["*"]  # update this for production
-# new, better line
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+# ---------------------------
+# Allowed Hosts
+# ---------------------------
+# Default Railway domain
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".up.railway.app",   # allow any Railway subdomain
+]
 
-# Optional: Railway public domain
-RAILWAY_PUBLIC_DOMAIN = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
-if RAILWAY_PUBLIC_DOMAIN:
-    ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
+# Optional: from env (append if set)
+extra_hosts = os.environ.get("ALLOWED_HOSTS")
+if extra_hosts:
+    ALLOWED_HOSTS.extend(extra_hosts.split(","))
 
 # ---------------------------
 # Application definition
@@ -334,8 +337,8 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         default=env("DATABASE_URL"),
-        conn_max_age=600,  # persistent connections
-        ssl_require=False  # Railway internal DB doesn't require SSL
+        conn_max_age=600,
+        ssl_require=False
     )
 }
 
@@ -372,13 +375,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ---------------------------
 # Additional production safety
 # ---------------------------
-# Force HTTPS in production
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_HSTS_SECONDS = 3600 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
-
-
-
