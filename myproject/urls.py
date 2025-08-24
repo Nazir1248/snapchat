@@ -14,11 +14,28 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# # myproject/urls.py
+# from django.contrib import admin
+# from django.urls import path, include # Add 'include'
+
+# urlpatterns = [
+#     path('private-admin-not-public/', admin.site.urls),
+#     path('', include('collector.urls')), # Add this line
+# ]
+
+
+
 # myproject/urls.py
+
 from django.contrib import admin
-from django.urls import path, include # Add 'include'
+from django.urls import path
+from django.http import HttpResponse
+
+# A simple view that is guaranteed to work
+def home_view(request):
+    return HttpResponse("Hello, Railway! The health check is working.")
 
 urlpatterns = [
-    path('private-admin-not-public/', admin.site.urls),
-    path('', include('collector.urls')), # Add this line
+    path("admin/", admin.site.urls),
+    path("", home_view, name="home"),  # ✅ Add this line for the homepage
 ]
