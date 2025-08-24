@@ -307,7 +307,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "snapchat.wsgi.application"
+WSGI_APPLICATION = "myproject.wsgi.application"
 
 # ✅ Database
 DATABASES = {
