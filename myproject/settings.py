@@ -259,14 +259,23 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+import environ
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "dummy-secret-key")
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+CSRF_TRUSTED_ORIGINS= ["https://railwaydjango-production-355a.up.railway.app"]
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-# Allow all hosts for now (safe on Railway since only your URL is exposed)
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY", default="unsafe-secret-key")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool("DEBUG", default=True)
+
+ALLOWED_HOSTS = ["*"]  # update this for production
 
 # Installed apps (add whitenoise for static files if not already included)
 INSTALLED_APPS = [
@@ -310,11 +319,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "myproject.wsgi.application"
 
 # ✅ Database
+# Database
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-    )
+    "default": env.db("DATABASE_URL")
 }
 
 # Password validation
@@ -333,7 +340,7 @@ USE_TZ = True
 
 # ✅ Static files
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Use WhiteNoise to serve static files in production
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
