@@ -1,2 +1,2 @@
 release: python manage.py collectstatic --no-input && python manage.py migrate
-web: gunicorn myproject.wsgi --bind 0.0.0.0:$PORT --log-file -
+web: gunicorn snapchat.wsgi --bind 0.0.0.0:$PORT --log-file -
